@@ -27,7 +27,6 @@ export default function UpdateListing() {
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
   const [pageLoading, setPageLoading] = useState(false);
-  console.log(formData);
 
   useEffect(() => {
     const fetchListing = async () => {
@@ -39,7 +38,7 @@ export default function UpdateListing() {
         console.log(data.message);
         return;
       }
-      console.log(data);
+      
       delete data.data._id;
       delete data.data.createdAt;
       delete data.data.updatedAt;
