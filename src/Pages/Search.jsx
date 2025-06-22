@@ -54,7 +54,7 @@ export default function Search() {
         setLoading(true);
         setShowMore(false);
         const searchQuery = urlParams.toString();
-        const res = await fetch(`https://home-haven-backend-lac.vercel.app/api/listing/search?${searchQuery}`);
+        const res = await fetch(`/api/listing/search?${searchQuery}`);
         const response = await res.json();
         if (response.data) {
           const { data } = response;

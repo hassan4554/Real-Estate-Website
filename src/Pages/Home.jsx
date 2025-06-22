@@ -15,7 +15,7 @@ const Home = () => {
   useEffect(() => {
     const fetchOfferListings = async () => {
       try {
-        const res = await fetch("https://home-haven-backend-lac.vercel.app/api/listing/search?offer=true&limit=4");
+        const res = await fetch("/api/listing/search?offer=true&limit=4");
         const response = await res.json();
         const { data } = response;
         setOfferListings(data);
@@ -26,7 +26,7 @@ const Home = () => {
     };
     const fetchRentListings = async () => {
       try {
-        const res = await fetch("https://home-haven-backend-lac.vercel.app/api/listing/search?type=rent&limit=4");
+        const res = await fetch("/api/listing/search?type=rent&limit=4");
         const response = await res.json();
         const { data } = response;
         setRentListings(data);
@@ -38,7 +38,7 @@ const Home = () => {
 
     const fetchSaleListings = async () => {
       try {
-        const res = await fetch("https://home-haven-backend-lac.vercel.app/api/listing/search?type=sale&limit=4");
+        const res = await fetch("/api/listing/search?type=sale&limit=4");
         const response = await res.json();
         const { data } = response;
         setSaleListings(data);

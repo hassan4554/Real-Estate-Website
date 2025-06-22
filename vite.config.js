@@ -7,7 +7,7 @@ export default defineConfig({
   server: {
     proxy: {
       "/api": {
-        target: "https://home-haven-backend-lac.vercel.app/",
+        target: "https://home-haven-backend-lac.vercel.app",
         secure: false,
       },
     },
