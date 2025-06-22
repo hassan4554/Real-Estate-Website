@@ -32,13 +32,15 @@ export default function UpdateListing() {
     const fetchListing = async () => {
       setPageLoading(true);
       const listingId = params.listingId;
-      const res = await fetch(`/api/listing/get/${listingId}`);
+      const res = await fetch(
+        `https://home-haven-backend-lac.vercel.app/api/listing/get/${listingId}`
+      );
       const data = await res.json();
       if (data.success === false) {
         console.log(data.message);
         return;
       }
-      
+
       delete data.data._id;
       delete data.data.createdAt;
       delete data.data.updatedAt;
@@ -154,16 +156,19 @@ export default function UpdateListing() {
         return setError("Discount price must be lower than regular price");
       setLoading(true);
       setError(false);
-      const res = await fetch(`/api/listing/update/${params.listingId}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          ...formData,
-          userRef: currentUser.data._id,
-        }),
-      });
+      const res = await fetch(
+        `https://home-haven-backend-lac.vercel.app/api/listing/update/${params.listingId}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            ...formData,
+            userRef: currentUser.data._id,
+          }),
+        }
+      );
       const response = await res.json();
       setLoading(false);
       if (response.success === false) {
