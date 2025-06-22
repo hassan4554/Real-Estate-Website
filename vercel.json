@@ -1,8 +1,8 @@
 {
     "rewrites": [
-        {
-            "source": "/(.*)",
-            "destination":"/"
-        }
+      {
+        "source": "/api/:path*",
+        "destination": "https://home-haven-backend-lac.vercel.app/api/:path*"
+      }
     ]
-}
+  }
