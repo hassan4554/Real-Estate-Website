@@ -12,6 +12,8 @@ import {
 } from "../Redux/user/userSlice";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
+import { getAccessTokenFromLocalStorage } from "../utils/local-storage";
+
 export default function Profile() {
   const fileRef = useRef(null);
   const { currentUser, loading, error } = useSelector((state) => state.user);
@@ -99,16 +101,22 @@ export default function Profile() {
     e.preventDefault();
     try {
       dispatch(updateUserStart());
-      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/user/update/${currentUser.data._id}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
+      const res = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/api/user/update/${
+          currentUser.data._id
+        }`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getAccessTokenFromLocalStorage()}`,
+          },
+          body: JSON.stringify(formData),
+        }
+      );
       const data = await res.json();
-      if (data.success === false) {
-        dispatch(updateUserFailure(data.message));
+      if (data.error) {
+        dispatch(updateUserFailure(data.error));
         return;
       }
 
@@ -122,39 +130,66 @@ export default function Profile() {
   const handleDeleteUser = async () => {
     try {
       dispatch(deleteUserStart());
-      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/user/delete/${currentUser._id}`, {
-        method: "DELETE",
-      });
+      const res = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/api/user/delete/${
+          currentUser._id
+        }`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getAccessTokenFromLocalStorage()}`,
+          },
+        }
+      );
       const data = await res.json();
-      if (data.success === false) {
-        dispatch(deleteUserFailure(data.message));
+      if (data.error) {
+        dispatch(deleteUserFailure(data.error));
         return;
       }
       dispatch(deleteUserSuccess(data));
     } catch (error) {
-      dispatch(deleteUserFailure(error.message));
+      dispatch(deleteUserFailure(error?.message));
     }
   };
 
   const handleSignOut = async () => {
     try {
       dispatch(signOutUserStart());
-      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/auth/signout`);
+      const res = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/api/auth/signout`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getAccessTokenFromLocalStorage()}`,
+          },
+        }
+      );
       const data = await res.json();
-      if (data.success === false) {
-        dispatch(deleteUserFailure(data.message));
+      if (data.error) {
+        dispatch(deleteUserFailure(data.error));
         return;
       }
       dispatch(deleteUserSuccess(data));
     } catch (error) {
-      dispatch(deleteUserFailure(error.message));
+      dispatch(deleteUserFailure(error?.message));
     }
   };
 
   const handleShowListings = async () => {
     try {
       setShowListingsError(false);
-      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/user/get-listings/${currentUser.data._id}`);
+      const res = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/api/user/get-listings/${
+          currentUser.data._id
+        }`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getAccessTokenFromLocalStorage()}`,
+          },
+        }
+      );
       const response = await res.json();
       if (response.success === false) {
         setShowListingsError(true);
@@ -170,12 +205,19 @@ export default function Profile() {
 
   const handleListingDelete = async (listingId) => {
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/listing/delete/${listingId}`, {
-        method: "DELETE",
-      });
+      const res = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/api/listing/delete/${listingId}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getAccessTokenFromLocalStorage()}`,
+          },
+        }
+      );
       const data = await res.json();
-      if (data.success === false) {
-        console.log(data.message);
+      if (data.error) {
+        console.log(data.error);
         return;
       }
 
@@ -183,7 +225,7 @@ export default function Profile() {
         prev.filter((listing) => listing._id !== listingId)
       );
     } catch (error) {
-      console.log(error.message);
+      console.log(error?.message);
     }
   };
   return (

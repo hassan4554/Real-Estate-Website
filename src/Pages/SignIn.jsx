@@ -7,6 +7,7 @@ import {
   signInFailure,
 } from "../Redux/user/userSlice";
 import OAuth from "../Components/OAuth";
+import { setAccessTokenInLocalStorage } from "../utils/local-storage";
 
 export default function SignIn() {
   const [formData, setFormData] = useState({});
@@ -23,19 +24,23 @@ export default function SignIn() {
     e.preventDefault();
     try {
       dispatch(signInStart());
-      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/auth/signin`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
-      const data = await res.json();
-      console.log(data);
+      const res = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/api/auth/signin`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        }
+      );
+      let data = await res.json();
       if (data.error) {
-        dispatch(signInFailure(data.message));
+        dispatch(signInFailure(data.error));
         return;
       }
+
+      setAccessTokenInLocalStorage(data.data.tokens.accessToken);
       dispatch(signInSuccess(data));
       navigate("/");
     } catch (error) {

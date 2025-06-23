@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { getAccessTokenFromLocalStorage } from "../../utils/local-storage";
 
 export default function Contact({ listing }) {
   const [landlord, setLandlord] = useState(null);
@@ -12,7 +13,13 @@ export default function Contact({ listing }) {
     const fetchLandlord = async () => {
       try {
         const res = await fetch(
-          `${import.meta.env.VITE_API_BASE_URL}/api/user/${listing.userRef}`
+          `${import.meta.env.VITE_API_BASE_URL}/api/user/${listing.userRef}`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${getAccessTokenFromLocalStorage()}`,
+            },
+          }
         );
         const data = await res.json();
         setLandlord(data.data);

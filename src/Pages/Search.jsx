@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ListingItem from "../Components/ListingItem";
+import {getAccessTokenFromLocalStorage} from '../utils/local-storage'
 
 export default function Search() {
   const navigate = useNavigate();
@@ -54,7 +55,13 @@ export default function Search() {
         setLoading(true);
         setShowMore(false);
         const searchQuery = urlParams.toString();
-        const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/listing/search?${searchQuery}`);
+        const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/listing/search?${searchQuery}`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${getAccessTokenFromLocalStorage()}`
+            },
+          });
         const response = await res.json();
         if (response.data) {
           const { data } = response;
@@ -116,8 +123,6 @@ export default function Search() {
       urlParams.set(key, value);
     });
     const searchQuery = urlParams.toString();
-    console.log("searchQuery");
-    console.log(searchQuery);
     navigate(`/search?${searchQuery}`);
   };
 
@@ -127,7 +132,13 @@ export default function Search() {
     const urlParams = new URLSearchParams(location.search);
     urlParams.set("startIndex", startIndex);
     const searchQuery = urlParams.toString();
-    const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/listing/get?${searchQuery}`);
+    const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/listing/get?${searchQuery}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${getAccessTokenFromLocalStorage()}`
+        },
+      });
     const data = await res.json();
     if (data.length < 9) {
       setShowMore(false);

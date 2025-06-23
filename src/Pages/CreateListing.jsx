@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../supabase";
+import { getAccessTokenFromLocalStorage } from "../utils/local-storage";
 
 export default function CreateListing() {
   const { currentUser } = useSelector((state) => state.user);
@@ -25,7 +26,7 @@ export default function CreateListing() {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
-  
+
   const handleImageSubmit = (e) => {
     if (files.length > 0 && files.length + formData.imageUrls.length < 7) {
       setUploading(true);
@@ -130,16 +131,20 @@ export default function CreateListing() {
         return setError("Discount price must be lower than regular price");
       setLoading(true);
       setError(false);
-      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/listing/create`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          ...formData,
-          userRef: currentUser.data._id,
-        }),
-      });
+      const res = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/api/listing/create`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getAccessTokenFromLocalStorage()}`,
+          },
+          body: JSON.stringify({
+            ...formData,
+            userRef: currentUser.data._id,
+          }),
+        }
+      );
       const response = await res.json();
       setLoading(false);
       if (response.success === false) {

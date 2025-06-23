@@ -14,6 +14,7 @@ import {
   FaShare,
 } from "react-icons/fa";
 import Contact from "../Components/Contact";
+import { getAccessTokenFromLocalStorage } from "../utils/local-storage";
 
 export default function Listing() {
   SwiperCore.use([Navigation]);
@@ -29,9 +30,19 @@ export default function Listing() {
     const fetchListing = async () => {
       try {
         setLoading(true);
-        const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/listing/get/${params.listingId}`);
+        const res = await fetch(
+          `${import.meta.env.VITE_API_BASE_URL}/api/listing/get/${
+            params.listingId
+          }`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${getAccessTokenFromLocalStorage()}`,
+            },
+          }
+        );
         const data = await res.json();
-        if (data.success === false) {
+        if (data.error) {
           setError(true);
           setLoading(false);
           return;

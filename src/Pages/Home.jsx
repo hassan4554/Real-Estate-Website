@@ -5,6 +5,7 @@ import { Navigation } from "swiper/modules";
 import SwiperCore from "swiper";
 import "swiper/css/bundle";
 import ListingItem from "../Components/ListingItem";
+import { getAccessTokenFromLocalStorage } from "../utils/local-storage";
 
 const Home = () => {
   const [offerListings, setOfferListings] = useState([]);
@@ -15,7 +16,17 @@ const Home = () => {
   useEffect(() => {
     const fetchOfferListings = async () => {
       try {
-        const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/listing/search?offer=true&limit=4`);
+        const res = await fetch(
+          `${
+            import.meta.env.VITE_API_BASE_URL
+          }/api/listing/search?offer=true&limit=4`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${getAccessTokenFromLocalStorage()}`,
+            },
+          }
+        );
         const response = await res.json();
         const { data } = response;
         setOfferListings(data);
@@ -26,7 +37,17 @@ const Home = () => {
     };
     const fetchRentListings = async () => {
       try {
-        const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/listing/search?type=rent&limit=4`);
+        const res = await fetch(
+          `${
+            import.meta.env.VITE_API_BASE_URL
+          }/api/listing/search?type=rent&limit=4`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${getAccessTokenFromLocalStorage()}`,
+            },
+          }
+        );
         const response = await res.json();
         const { data } = response;
         setRentListings(data);
@@ -38,7 +59,17 @@ const Home = () => {
 
     const fetchSaleListings = async () => {
       try {
-        const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/listing/search?type=sale&limit=4`);
+        const res = await fetch(
+          `${
+            import.meta.env.VITE_API_BASE_URL
+          }/api/listing/search?type=sale&limit=4`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${getAccessTokenFromLocalStorage()}`,
+            },
+          }
+        );
         const response = await res.json();
         const { data } = response;
         setSaleListings(data);

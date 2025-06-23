@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useParams, useNavigate } from "react-router-dom";
 import { supabase } from "../supabase";
+import { getAccessTokenFromLocalStorage } from "../utils/local-storage";
 
 export default function UpdateListing() {
   const params = useParams();
@@ -32,10 +33,18 @@ export default function UpdateListing() {
     const fetchListing = async () => {
       setPageLoading(true);
       const listingId = params.listingId;
-      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/listing/get/${listingId}`);
+      const res = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/api/listing/get/${listingId}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getAccessTokenFromLocalStorage()}`,
+          },
+        }
+      );
       const data = await res.json();
-      if (data.success === false) {
-        console.log(data.message);
+      if (data.error) {
+        console.log(data.error);
         return;
       }
 
@@ -154,16 +163,22 @@ export default function UpdateListing() {
         return setError("Discount price must be lower than regular price");
       setLoading(true);
       setError(false);
-      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/listing/update/${params.listingId}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          ...formData,
-          userRef: currentUser.data._id,
-        }),
-      });
+      const res = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/api/listing/update/${
+          params.listingId
+        }`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getAccessTokenFromLocalStorage()}`,
+          },
+          body: JSON.stringify({
+            ...formData,
+            userRef: currentUser.data._id,
+          }),
+        }
+      );
       const response = await res.json();
       setLoading(false);
       if (response.success === false) {
