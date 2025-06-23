@@ -25,9 +25,9 @@ const App = () => {
             path="/update-listing/:listingId"
             element={<UpdateListing />}
           />
-          <Route path="/search" element={<Search />} />
           <Route path="/listing/:listingId" element={<Listing />} />
         </Route>
+        <Route path="/search" element={<Search />} />
         <Route path="/sign-in" element={<SignIn />} />
         <Route path="/sign-up" element={<Signup />} />
         <Route path="/about" element={<About />} />
